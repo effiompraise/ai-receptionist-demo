@@ -1,64 +1,204 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Apriko | 24/7 AI Receptionist Demo</title>
-    <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-        .card { background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); width: 100%; max-width: 420px; border: 1px solid #334155; }
-        h2 { margin-top: 0; font-size: 1.5rem; color: #38bdf8; }
-        label { display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 6px; text-transform: uppercase; color: #cbd5e1; }
-        select, input, textarea { width: 100%; margin-bottom: 16px; padding: 11px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #38bdf8; color: #0f172a; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; }
-        #status { font-weight: bold; text-align: center; margin-top: 15px; font-size: 0.9rem; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Apriko | 24/7 AI Receptionist Secure Live Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
 </head>
-<body>
-    <div class="card">
-        <h2>24/7 AI Receptionist Demo</h2>
-        <p style="color: #94a3b8; font-size: 0.9rem;">Test instant AI lead triage.</p>
-        <form id="demoForm">
-            <label>Select Industry</label>
-            <select id="industry" required>
-                <option value="Trades">Roofing / Home Trades</option>
-                <option value="Mobile Services">Mobile Auto Detailing</option>
-                <option value="Professional">Solo Lawyer / Accountant</option>
-            </select>
-            <label>Customer Name</label>
-            <input type="text" id="name" placeholder="Mike Miller" required>
-            <label>Customer Enquiry</label>
-            <textarea id="message" rows="3" placeholder="My roof is leaking after the storm!" required></textarea>
-            <button type="submit">Test AI Triage</button>
-        </form>
-        <p id="status"></p>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between p-4 sm:p-8">
+
+  <!-- Header -->
+  <header class="max-w-xl w-full mx-auto pt-4 pb-6 text-center">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-medium mb-4">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      Secure Production Demo • Powered by n8n &amp; Groq AI
     </div>
-    <script>
-        document.getElementById('demoForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const statusEl = document.getElementById('status');
-            statusEl.style.color = '#38bdf8';
-            statusEl.innerText = "Analysing enquiry...";
-            
-            const webhookUrl = 'https://apriko-n8n-engine-1d2eb553bc64.herokuapp.com/webhook/ai-receptionist';
-            
-            fetch(webhookUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    industry: document.getElementById('industry').value,
-                    name: document.getElementById('name').value,
-                    message: document.getElementById('message').value
-                })
-            }).then(res => {
-                if (!res.ok) throw new Error('Failed');
-                statusEl.style.color = '#34d399';
-                statusEl.innerText = "Triaged in under 3 seconds! Reply dispatched.";
-            }).catch(() => {
-                statusEl.style.color = '#f87171';
-                statusEl.innerText = "Error: Ensure n8n workflow is Active.";
-            });
+    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+      Digital Apriko <span class="text-amber-500">AI Receptionist</span>
+    </h1>
+    <p class="mt-2 text-sm sm:text-base text-slate-400">
+      Submit a sample customer enquiry below. Our secure 24/7 AI engine will instantly triage the lead, alert the dispatcher, and dispatch a client confirmation email.
+    </p>
+  </header>
+
+  <!-- Main Card -->
+  <main class="max-w-xl w-full mx-auto bg-slate-900/80 border border-slate-800 rounded-2xl shadow-2xl p-6 sm:p-8 backdrop-blur">
+    <form id="receptionistForm" class="space-y-5" novalidate>
+      
+      <!-- Industry Selection -->
+      <div>
+        <label for="industry" class="block text-sm font-medium text-slate-300 mb-1.5">
+          Select Business Industry <span class="text-amber-500">*</span>
+        </label>
+        <select
+          id="industry"
+          name="industry"
+          required
+          class="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+        >
+          <option value="Trades">Trades (Plumbing, Roofing, Electrical, HVAC)</option>
+          <option value="Mobile Services">Mobile Services (Detailing, Cleaning, Call-Out)</option>
+          <option value="Professional">Professional Services (Consulting, Legal, Agency)</option>
+        </select>
+      </div>
+
+      <!-- Customer Name -->
+      <div>
+        <label for="name" class="block text-sm font-medium text-slate-300 mb-1.5">
+          Your Full Name <span class="text-amber-500">*</span>
+        </label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="e.g. Praise Effiom"
+          maxlength="100"
+          required
+          class="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+        />
+      </div>
+
+      <!-- Email & Phone Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="email" class="block text-sm font-medium text-slate-300 mb-1.5">
+            Email Address <span class="text-amber-500">*</span>
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="you@example.com"
+            maxlength="254"
+            required
+            class="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+          />
+        </div>
+
+        <div>
+          <label for="phone" class="block text-sm font-medium text-slate-300 mb-1.5">
+            Phone Number <span class="text-slate-500 text-xs font-normal">(Optional)</span>
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            placeholder="+234 800 000 0000"
+            maxlength="30"
+            class="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+          />
+        </div>
+      </div>
+
+      <!-- Customer Enquiry Message -->
+      <div>
+        <label for="message" class="block text-sm font-medium text-slate-300 mb-1.5">
+          How can we help you today? <span class="text-amber-500">*</span>
+        </label>
+        <textarea
+          id="message"
+          name="message"
+          rows="4"
+          maxlength="1000"
+          placeholder="e.g. I have a severe leaking roof that needs urgent repair..."
+          required
+          class="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+        ></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        id="submitBtn"
+        class="w-full py-3.5 px-6 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <span id="btnText">Send Enquiry to AI Receptionist</span>
+      </button>
+
+      <!-- Feedback Banner (XSS-Safe DOM Nodes) -->
+      <div id="statusBox" class="hidden rounded-xl p-4 text-sm border"></div>
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer class="max-w-xl w-full mx-auto py-6 text-center text-xs text-slate-500">
+    &copy; 2026 Digital Apriko Ltd. Secure Automated Workflows.
+  </footer>
+
+  <!-- Secure Submission Script -->
+  <script>
+    const WEBHOOK_URL = 'https://apriko-n8n-engine-1d2eb553bc64.herokuapp.com/webhook/ai-receptionist';
+
+    const form = document.getElementById('receptionistForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const statusBox = document.getElementById('statusBox');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      btnText.textContent = 'Triaging securely...';
+      statusBox.className = 'hidden';
+      statusBox.textContent = '';
+
+      const payload = {
+        industry: document.getElementById('industry').value,
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        message: document.getElementById('message').value.trim()
+      };
+
+      try {
+        const response = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
         });
-    </script>
+
+        if (!response.ok) {
+          throw new Error(`Server responded with status ${response.status}`);
+        }
+
+        // XSS-Safe DOM construction
+        statusBox.className = 'rounded-xl p-4 text-sm border bg-emerald-500/10 border-emerald-500/30 text-emerald-300 block';
+        statusBox.innerHTML = '';
+        
+        const strongEl = document.createElement('strong');
+        strongEl.className = 'font-semibold block mb-1';
+        strongEl.textContent = '✅ Enquiry Received & Triaged Safely!';
+        
+        const pEl = document.createElement('p');
+        pEl.textContent = `An instant alert was dispatched and a confirmation email has been sent to your address.`;
+        
+        statusBox.appendChild(strongEl);
+        statusBox.appendChild(pEl);
+        
+        form.reset();
+      } catch (error) {
+        statusBox.className = 'rounded-xl p-4 text-sm border bg-rose-500/10 border-rose-500/30 text-rose-300 block';
+        statusBox.innerHTML = '';
+        
+        const strongErr = document.createElement('strong');
+        strongErr.className = 'font-semibold block mb-1';
+        strongErr.textContent = '⚠️ Transmission Failed';
+        
+        const pErr = document.createElement('p');
+        pErr.textContent = `Could not reach the secure webhook endpoint. Ensure the n8n workflow is Active. (${error.message})`;
+        
+        statusBox.appendChild(strongErr);
+        statusBox.appendChild(pErr);
+      } finally {
+        submitBtn.disabled = false;
+        btnText.textContent = 'Send Enquiry to AI Receptionist';
+      }
+    });
+  </script>
 </body>
 </html>

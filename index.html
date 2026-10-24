@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Apriko | 24/7 AI Receptionist Demo</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .card { background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); width: 100%; max-width: 420px; border: 1px solid #334155; }
+        h2 { margin-top: 0; font-size: 1.5rem; color: #38bdf8; }
+        label { display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 6px; text-transform: uppercase; color: #cbd5e1; }
+        select, input, textarea { width: 100%; margin-bottom: 16px; padding: 11px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #38bdf8; color: #0f172a; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; }
+        #status { font-weight: bold; text-align: center; margin-top: 15px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>24/7 AI Receptionist Demo</h2>
+        <p style="color: #94a3b8; font-size: 0.9rem;">Test instant AI lead triage.</p>
+        <form id="demoForm">
+            <label>Select Industry</label>
+            <select id="industry" required>
+                <option value="Trades">Roofing / Home Trades</option>
+                <option value="Mobile Services">Mobile Auto Detailing</option>
+                <option value="Professional">Solo Lawyer / Accountant</option>
+            </select>
+            <label>Customer Name</label>
+            <input type="text" id="name" placeholder="Mike Miller" required>
+            <label>Customer Enquiry</label>
+            <textarea id="message" rows="3" placeholder="My roof is leaking after the storm!" required></textarea>
+            <button type="submit">Test AI Triage</button>
+        </form>
+        <p id="status"></p>
+    </div>
+    <script>
+        document.getElementById('demoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const statusEl = document.getElementById('status');
+            statusEl.style.color = '#38bdf8';
+            statusEl.innerText = "Analysing enquiry...";
+            
+            const webhookUrl = 'https://apriko-n8n-engine-1d2eb553bc64.herokuapp.com/webhook/ai-receptionist';
+            
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    industry: document.getElementById('industry').value,
+                    name: document.getElementById('name').value,
+                    message: document.getElementById('message').value
+                })
+            }).then(res => {
+                if (!res.ok) throw new Error('Failed');
+                statusEl.style.color = '#34d399';
+                statusEl.innerText = "Triaged in under 3 seconds! Reply dispatched.";
+            }).catch(() => {
+                statusEl.style.color = '#f87171';
+                statusEl.innerText = "Error: Ensure n8n workflow is Active.";
+            });
+        });
+    </script>
+</body>
+</html>
